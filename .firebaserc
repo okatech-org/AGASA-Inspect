@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "digitalium-ga"
+  },
+  "targets": {
+    "digitalium-ga": {
+      "hosting": {
+        "agasa-inspect": [
+          "agasa-inspect"
+        ]
+      }
+    }
+  }
+}

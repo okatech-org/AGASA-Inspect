@@ -1,0 +1,20 @@
+{
+    "hosting": {
+        "site": "agasa-inspect",
+        "public": "public",
+        "ignore": [
+            "firebase.json",
+            "**/.*",
+            "**/node_modules/**"
+        ],
+        "rewrites": [
+            {
+                "source": "**",
+                "run": {
+                    "serviceId": "agasa-inspect",
+                    "region": "europe-west1"
+                }
+            }
+        ]
+    }
+}
