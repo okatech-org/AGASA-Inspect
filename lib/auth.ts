@@ -51,7 +51,7 @@ export function useAuth() {
     const login = async (token: string, profile: UserProfile, passwordHash?: string, pinHash?: string) => {
         setUser(profile);
         const secure = typeof window !== 'undefined' && window.location.protocol === 'https:' ? '; secure' : '';
-        document.cookie = `agasa-inspect-session=${token}; path=/; max-age=43200; samesite=lax${secure}`; // 12h
+        document.cookie = `__session=${token}; path=/; max-age=43200; samesite=lax${secure}`; // 12h
 
         try {
             await db.localUser.put({
@@ -71,7 +71,7 @@ export function useAuth() {
     };
 
     const logout = async () => {
-        document.cookie = 'agasa-inspect-session=; path=/; max-age=0; samesite=lax';
+        document.cookie = '__session=; path=/; max-age=0; samesite=lax';
         try {
             await db.localUser.delete("session");
         } catch { }

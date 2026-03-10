@@ -16,7 +16,7 @@ export function middleware(request: NextRequest) {
     }
 
     // Session check
-    const sessionToken = request.cookies.get('agasa-inspect-session')?.value;
+    const sessionToken = request.cookies.get('__session')?.value;
     const isDemoToken = !!sessionToken && sessionToken.startsWith("demo-");
     const isSessionToken = !!sessionToken && /^[a-f0-9]{64}$/i.test(sessionToken);
     const isAuthenticated = isSessionToken || (enableDemoMode && isDemoToken);

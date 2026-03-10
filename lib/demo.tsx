@@ -39,14 +39,14 @@ export function DemoProvider({ children }: { children: React.ReactNode }) {
         setDemoProfile(profile);
         if (typeof document !== 'undefined') {
             const secure = window.location.protocol === 'https:' ? '; secure' : '';
-            document.cookie = `agasa-inspect-session=demo-${profile}; path=/; max-age=43200; samesite=lax${secure}`;
+            document.cookie = `__session=demo-${profile}; path=/; max-age=43200; samesite=lax${secure}`;
         }
     }, [enableDemoMode]);
 
     const exitDemo = useCallback(() => {
         setDemoProfile(null);
         if (typeof document !== 'undefined') {
-            document.cookie = 'agasa-inspect-session=; path=/; max-age=0; samesite=lax';
+            document.cookie = '__session=; path=/; max-age=0; samesite=lax';
         }
     }, []);
 
