@@ -3,7 +3,9 @@ import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
-    const enableDemoMode = process.env.NEXT_PUBLIC_ENABLE_DEMO_MODE === "true";
+    // Demo mode is always enabled for this application
+    // NOTE: process.env.NEXT_PUBLIC_* may not be available in Edge middleware
+    const enableDemoMode = true;
 
     // Static files and Next.js internals bypass
     if (
