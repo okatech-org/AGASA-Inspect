@@ -1,21 +1,21 @@
 "use client";
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { ShieldAlert, AlertCircle } from 'lucide-react';
 import { BigButton } from '@/components/ui/BigButton';
-// import { useMutation } from "convex/react";
-// import { api } from "@/convex/_generated/api";
+import { useAuth } from "@/lib/auth";
 
 export default function LoginPage() {
     const router = useRouter();
+    const { login } = useAuth();
     const [matricule, setMatricule] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
-
-    // const loginUser = useMutation(api.auth.users.loginUser);
+    const enableDemoMode = process.env.NEXT_PUBLIC_ENABLE_DEMO_MODE === "true";
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -28,20 +28,40 @@ export default function LoginPage() {
         setIsLoading(true);
 
         try {
-            // Mock login for now, waiting for convex provider setup
-            // const result = await loginUser({ matricule, motDePasse: password });
-            // document.cookie = `agasa-inspect-session=${result.sessionToken}; path=/; max-age=43200`; // 12h
-            // router.push("/dashboard");
+            const response = await fetch("/api/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ matricule, motDePasse: password }),
+            });
+            if (!response.ok) {
+                const payload = await response.json().catch(() => ({ error: "Erreur de connexion" }));
+                throw new Error(payload.error || "Erreur de connexion");
+            }
 
-            console.log("Login attempt with", matricule);
-            // fallback mock behavior:
-            setTimeout(() => {
-                router.push("/dashboard");
-            }, 1000);
-
+            const result = await response.json() as {
+                userId: string;
+                nom: string;
+                prenom: string;
+                role: "admin_systeme" | "superviseur" | "inspecteur" | "demo";
+                province: string;
+                sessionToken: string;
+            };
+            await login(
+                result.sessionToken,
+                {
+                    id: result.userId,
+                    matricule,
+                    nom: result.nom,
+                    prenom: result.prenom,
+                    role: result.role,
+                    province: result.province,
+                },
+            );
+            router.push("/dashboard");
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : "Erreur de connexion";
             setError(message);
+        } finally {
             setIsLoading(false);
         }
     };
@@ -50,10 +70,20 @@ export default function LoginPage() {
         <div className="min-h-screen bg-terrain-bg flex flex-col items-center justify-center p-4">
             <div className="w-full max-w-md bg-white rounded-2xl shadow-terrain overflow-hidden border border-gray-100">
 
-                <div className="bg-inspect-green px-6 py-8 flex flex-col items-center text-white">
+                <div className="relative bg-inspect-green px-6 py-8 flex flex-col items-center text-white overflow-hidden">
+                    <Image
+                        src="/images/gabon/digital-office.jpg"
+                        alt="Connexion sécurisée AGASA-Inspect"
+                        fill
+                        sizes="100vw"
+                        className="object-cover opacity-30"
+                    />
+                    <div className="absolute inset-0 bg-emerald-950/55" />
+                    <div className="relative z-10 flex flex-col items-center">
                     <ShieldAlert className="w-16 h-16 mb-4" />
                     <h1 className="text-3xl font-bold mb-1">AGASA-Inspect</h1>
                     <p className="text-green-100 text-center font-medium">Inspections Sanitaires et Phytosanitaires</p>
+                    </div>
                 </div>
 
                 <div className="p-8">
@@ -104,14 +134,16 @@ export default function LoginPage() {
                         </BigButton>
                     </form>
 
-                    <div className="mt-8 flex justify-center">
-                        <button
-                            onClick={() => router.push('/demo')}
-                            className="text-inspect-blue font-bold text-lg hover:underline"
-                        >
-                            Mode Démonstration →
-                        </button>
-                    </div>
+                    {enableDemoMode && (
+                        <div className="mt-8 flex justify-center">
+                            <button
+                                onClick={() => router.push('/demo')}
+                                className="text-inspect-blue font-bold text-lg hover:underline"
+                            >
+                                Mode Démonstration →
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

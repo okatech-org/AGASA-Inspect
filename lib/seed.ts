@@ -8,9 +8,36 @@
 // 3 COMPTES DÉMO + 12 INSPECTEURS
 // ═══════════════════════════════════
 export const DEMO_USERS = [
-    { matricule: 'INSP-2026-D001', nom: 'MOUSSAVOU', prenom: 'Jean-Pierre', role: 'inspecteur', province: 'Estuaire', antenne: 'Libreville', pin: '1234', motDePasse: 'demo-inspect-2026' },
-    { matricule: 'INSP-2026-D002', nom: 'NZÉ', prenom: 'Marie-Claire', role: 'superviseur', province: 'Estuaire', antenne: 'Libreville', pin: '5678', motDePasse: 'demo-super-2026' },
-    { matricule: 'ADMIN-2026-D003', nom: 'OBIANG', prenom: 'Paul', role: 'admin_systeme', province: 'Toutes', antenne: 'Siège', pin: '0000', motDePasse: 'demo-admin-2026' },
+    {
+        matricule: 'INSP-2026-D001',
+        nom: 'MOUSSAVOU',
+        prenom: 'Jean-Pierre',
+        role: 'inspecteur',
+        province: 'Estuaire',
+        antenne: 'Libreville',
+        pin: process.env.AGASA_DEMO_PIN_INSPECTEUR || '0000',
+        motDePasse: process.env.AGASA_DEMO_PASSWORD_INSPECTEUR || 'DISABLED_DEMO_PASSWORD',
+    },
+    {
+        matricule: 'INSP-2026-D002',
+        nom: 'NZÉ',
+        prenom: 'Marie-Claire',
+        role: 'superviseur',
+        province: 'Estuaire',
+        antenne: 'Libreville',
+        pin: process.env.AGASA_DEMO_PIN_SUPERVISEUR || '0000',
+        motDePasse: process.env.AGASA_DEMO_PASSWORD_SUPERVISEUR || 'DISABLED_DEMO_PASSWORD',
+    },
+    {
+        matricule: 'ADMIN-2026-D003',
+        nom: 'OBIANG',
+        prenom: 'Paul',
+        role: 'admin_systeme',
+        province: 'Toutes',
+        antenne: 'Siège',
+        pin: process.env.AGASA_DEMO_PIN_ADMIN || '0000',
+        motDePasse: process.env.AGASA_DEMO_PASSWORD_ADMIN || 'DISABLED_DEMO_PASSWORD',
+    },
 ];
 
 export const INSPECTEURS_FICTIFS = [
@@ -161,4 +188,3 @@ export async function seedDatabase() {
         checklistPoints: totalPoints,
     };
 }
-

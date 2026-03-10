@@ -11,8 +11,8 @@ export interface LocalUser {
     role: string;
     province: string;
     sessionToken: string;
-    passwordHash: string;
-    pinHash: string;
+    passwordHash?: string;
+    pinHash?: string;
 }
 
 // ═══════════════════════════════════

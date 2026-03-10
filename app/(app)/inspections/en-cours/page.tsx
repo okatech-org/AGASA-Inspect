@@ -60,6 +60,8 @@ export default function InspectionEnCoursPage() {
     const [activeSection, setActiveSection] = useState(0);
     const [activePoint, setActivePoint] = useState(0);
     const [reponses, setReponses] = useState<ReponseMap>({});
+    const [isSending, setIsSending] = useState(false);
+    const [sendError, setSendError] = useState<string | null>(null);
 
     const allPoints = useMemo(() => CHECKLIST_SECTIONS.flatMap(s => s.points), []);
     const flatIndex = useMemo(() => {
@@ -137,6 +139,48 @@ export default function InspectionEnCoursPage() {
         }
     }, [activePoint, activeSection, section.points.length]);
 
+    const handleCompleteInspection = useCallback(async () => {
+        if (isSending) return;
+        setIsSending(true);
+        setSendError(null);
+        try {
+            const payload = {
+                type: "rapport_inspection",
+                reference: `INSP-DEMO-${Date.now()}`,
+                inspecteurId: "inspecteur-demo",
+                etablissementId: "etablissement-demo",
+                dateInspection: new Date().toISOString(),
+                scoreConformite: score.pct,
+                smileyCalcule: score.smiley,
+                resume: {
+                    conformes: score.conformes,
+                    nonConformes: score.nonConformes,
+                    nonApplicables: score.na,
+                    pointsCritiques: score.critiquesFailed,
+                },
+                reponses,
+            };
+
+            const response = await fetch("/api/gateway/f3", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+                const raw = await response.text();
+                throw new Error(raw || "Core indisponible");
+            }
+
+            router.push("/inspections");
+        } catch (error) {
+            const message = error instanceof Error ? error.message : "Impossible de synchroniser le rapport vers AGASA-Core.";
+            setSendError(message);
+        } finally {
+            setIsSending(false);
+        }
+    }, [isSending, reponses, router, score.conformes, score.critiquesFailed, score.na, score.nonConformes, score.pct, score.smiley]);
+
     // Completed
     if (progress === 100) {
         const scoreColor = score.pct >= 80 ? 'text-green-600 bg-green-50' : score.pct >= 60 ? 'text-orange-600 bg-orange-50' : 'text-red-600 bg-red-50';
@@ -158,8 +202,13 @@ export default function InspectionEnCoursPage() {
                     )}
                     <p className="text-gray-500 mt-4">Délai de mise en conformité suggéré : <strong>30 jours</strong></p>
                 </div>
-                <BigButton onClick={() => router.push('/inspections')} className="w-full h-16 text-lg">
-                    📄 Terminer l&apos;inspection
+                {sendError && (
+                    <div className="bg-red-100 border border-red-300 rounded-xl p-3 text-sm text-red-700">
+                        {sendError}
+                    </div>
+                )}
+                <BigButton onClick={handleCompleteInspection} disabled={isSending} className="w-full h-16 text-lg">
+                    {isSending ? "Synchronisation vers AGASA-Core..." : "📄 Terminer l'inspection"}
                 </BigButton>
             </div>
         );

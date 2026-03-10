@@ -18,14 +18,14 @@ export function BigButton({
     className,
     ...props
 }: BigButtonProps) {
-    const baseStyles = "min-h-[56px] text-lg font-semibold rounded-xl flex items-center justify-center gap-2 transition-transform active:scale-[0.97] w-full md:w-auto px-6";
+    const baseStyles = "min-h-[56px] text-base font-semibold rounded-xl flex items-center justify-center gap-3 transition-all duration-300 ease-agasa active:scale-[0.97] w-full md:w-auto px-8 font-sans cursor-pointer";
 
     const variants = {
-        primary: "bg-inspect-green text-white hover:bg-green-800",
-        danger: "bg-inspect-red text-white hover:bg-red-900",
-        warning: "bg-inspect-orange text-white hover:bg-orange-600",
-        secondary: "bg-inspect-blue text-white hover:bg-blue-900",
-        outline: "border-2 border-gray-300 text-gray-800 hover:bg-gray-50",
+        primary: "text-white gradient-agasa shadow-glow hover:shadow-[0_12px_40px_rgba(16,185,129,0.4)] hover:-translate-y-0.5 border-none",
+        danger: "bg-[var(--rose)] text-white hover:opacity-90 hover:-translate-y-0.5 border-none",
+        warning: "bg-[var(--amber)] text-white hover:opacity-90 hover:-translate-y-0.5 border-none",
+        secondary: "bg-[var(--blue)] text-white hover:opacity-90 hover:-translate-y-0.5 border-none",
+        outline: "border border-[var(--border)] text-[var(--text)] bg-transparent hover:bg-[var(--bg-muted)]",
     };
 
     return (

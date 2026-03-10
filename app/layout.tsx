@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#1B5E20",
+  themeColor: "#17253f",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -23,7 +23,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" translate="no">
-      <body className="antialiased min-h-screen flex flex-col bg-terrain-bg text-black">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
+      <body className="antialiased min-h-screen flex flex-col">
         <DemoProvider>
           {children}
         </DemoProvider>

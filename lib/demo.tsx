@@ -31,19 +31,22 @@ const DEMO_NAMES: Record<string, string> = {
 };
 
 export function DemoProvider({ children }: { children: React.ReactNode }) {
+    const enableDemoMode = process.env.NEXT_PUBLIC_ENABLE_DEMO_MODE === "true";
     const [demoProfile, setDemoProfile] = useState<DemoProfile>(null);
 
     const enterDemo = useCallback((profile: DemoProfile) => {
+        if (!enableDemoMode) return;
         setDemoProfile(profile);
         if (typeof document !== 'undefined') {
-            document.cookie = `agasa-inspect-session=demo-${profile}; path=/; max-age=43200`;
+            const secure = window.location.protocol === 'https:' ? '; secure' : '';
+            document.cookie = `agasa-inspect-session=demo-${profile}; path=/; max-age=43200; samesite=lax${secure}`;
         }
-    }, []);
+    }, [enableDemoMode]);
 
     const exitDemo = useCallback(() => {
         setDemoProfile(null);
         if (typeof document !== 'undefined') {
-            document.cookie = 'agasa-inspect-session=; path=/; max-age=0';
+            document.cookie = 'agasa-inspect-session=; path=/; max-age=0; samesite=lax';
         }
     }, []);
 
@@ -64,7 +67,7 @@ export function DemoProvider({ children }: { children: React.ReactNode }) {
     return (
         <DemoContext.Provider
             value={{
-                isDemoMode: !!demoProfile,
+                isDemoMode: enableDemoMode && !!demoProfile,
                 demoProfile,
                 demoUserName: demoProfile ? DEMO_NAMES[demoProfile] || '' : '',
                 enterDemo,

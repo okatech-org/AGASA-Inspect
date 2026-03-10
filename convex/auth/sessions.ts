@@ -42,7 +42,7 @@ export const destroySession = mutation({
     handler: async (ctx, args) => {
         const session = await ctx.db
             .query("sessions")
-            .filter((q) => q.eq(q.field("token"), args.sessionToken))
+            .withIndex("by_token", (q) => q.eq("token", args.sessionToken))
             .first();
 
         if (session) {
@@ -72,7 +72,7 @@ export const isSessionValid = query({
 
         const session = await ctx.db
             .query("sessions")
-            .filter((q) => q.eq(q.field("token"), args.sessionToken))
+            .withIndex("by_token", (q) => q.eq("token", args.sessionToken))
             .first();
 
         if (!session) return false;

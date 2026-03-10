@@ -56,49 +56,49 @@ const TIMELINE = [
 ];
 
 const PRIORITY_STYLES: Record<string, string> = {
-    urgente: 'border-l-red-500 bg-red-50',
-    haute: 'border-l-orange-400 bg-orange-50',
-    normale: 'border-l-blue-400 bg-blue-50',
+    urgente: 'border-l-[var(--rose)] bg-[rgba(244,63,94,0.06)]',
+    haute: 'border-l-[var(--amber)] bg-[rgba(245,158,11,0.06)]',
+    normale: 'border-l-[var(--blue)] bg-[rgba(59,130,246,0.06)]',
 };
 
 export default function DashboardPage() {
     return (
         <div className="space-y-6">
-            {/* Greeting */}
+            {/* Greeting — 18px recommended for Inspect (§8.3) */}
             <div>
-                <h1 className="text-2xl font-extrabold text-gray-900">{BONJOUR} Jean-Pierre 👋</h1>
-                <p className="text-sm text-gray-600 capitalize">{DATE_STR}</p>
-                <p className="text-xs text-gray-500">Province : Estuaire — Antenne : Libreville</p>
+                <h1 className="font-serif font-bold text-[var(--text)] text-[28px]">{BONJOUR} Jean-Pierre 👋</h1>
+                <p className="text-sm text-[var(--text-muted)] font-sans capitalize">{DATE_STR}</p>
+                <p className="text-xs text-[var(--text-muted)] font-sans opacity-70">Province : Estuaire — Antenne : Libreville</p>
             </div>
 
             {/* Sync banner */}
-            <Link href="/sync" className="block bg-inspect-orange/10 border-2 border-inspect-orange/30 rounded-xl p-3 text-center">
-                <p className="text-sm font-bold text-inspect-orange">🔄 16 éléments en attente de synchronisation</p>
-                <p className="text-xs text-orange-600 font-semibold mt-0.5">Synchroniser maintenant →</p>
+            <Link href="/sync" className="block neu-card p-3 text-center border-l-4 border-l-[var(--amber)]">
+                <p className="text-sm font-bold text-[var(--amber)] font-sans">🔄 16 éléments en attente de synchronisation</p>
+                <p className="text-xs text-[var(--amber)] font-sans font-semibold mt-0.5 opacity-70">Synchroniser maintenant →</p>
             </Link>
 
             {/* Section 1 — Planning du jour */}
             <div>
-                <h2 className="text-lg font-bold text-gray-800 mb-3">📅 Mes inspections du jour</h2>
+                <h2 className="font-serif font-bold text-[var(--text)] text-xl mb-3">📅 Mes inspections du jour</h2>
                 <div className="space-y-3">
                     {PLANNING_DU_JOUR.map((p) => (
-                        <div key={p.id} className={`bg-white rounded-xl border-l-4 p-5 shadow-sm ${PRIORITY_STYLES[p.priorite]}`}>
+                        <div key={p.id} className={`neu-card border-l-4 p-5 ${PRIORITY_STYLES[p.priorite]}`}>
                             <div className="flex items-start justify-between gap-3">
                                 <div className="flex-1">
-                                    <p className="font-bold text-gray-900 text-lg">🏢 {p.nom}</p>
-                                    <p className="text-sm text-gray-600">📍 {p.adresse}</p>
+                                    <p className="font-sans font-bold text-[var(--text)] text-lg">🏢 {p.nom}</p>
+                                    <p className="text-sm text-[var(--text-muted)] font-sans">📍 {p.adresse}</p>
                                     <div className="flex flex-wrap gap-2 mt-2">
-                                        <span className="px-2 py-0.5 bg-gray-100 rounded text-xs font-bold">{p.categorie}</span>
-                                        <span className="text-xs text-gray-600">📋 {p.type}</span>
+                                        <span className="badge bg-[var(--bg-muted)] text-[var(--text-muted)]">{p.categorie}</span>
+                                        <span className="text-xs text-[var(--text-muted)] font-sans flex items-center">📋 {p.type}</span>
                                         <StatusBadge status={p.priorite === 'urgente' ? 'danger' : p.priorite === 'haute' ? 'warning' : 'info'} label={p.priorite} />
                                     </div>
-                                    <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
+                                    <div className="flex items-center gap-4 mt-2 text-xs text-[var(--text-muted)] font-sans">
                                         <span>📊 {'⭐'.repeat(p.smiley)}{'☆'.repeat(5 - p.smiley)} ({p.smiley}/5)</span>
                                         <span>📅 {p.derniereInspection}</span>
                                     </div>
                                 </div>
                             </div>
-                            <Link href="/inspections/nouvelle" className="mt-3 w-full h-14 bg-inspect-green text-white rounded-xl font-bold text-lg flex items-center justify-center gap-2 hover:bg-green-700 transition-colors">
+                            <Link href="/inspections/nouvelle" className="mt-3 w-full min-h-[56px] gradient-agasa text-white rounded-xl font-sans font-bold text-base flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
                                 ▶️ DÉMARRER L&apos;INSPECTION
                             </Link>
                         </div>
@@ -109,42 +109,42 @@ export default function DashboardPage() {
             {/* Section 2 — Stats */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <FieldCard title="Ce mois">
-                    <p className="text-3xl font-extrabold text-inspect-green">14</p>
-                    <p className="text-xs text-gray-500">inspections</p>
-                    <p className="text-xs text-green-600 font-semibold flex items-center gap-0.5"><TrendingUp className="w-3 h-3" /> +3 vs dernier mois</p>
+                    <p className="text-3xl font-bold text-[var(--emerald)] font-sans">14</p>
+                    <p className="text-xs text-[var(--text-muted)] font-sans">inspections</p>
+                    <p className="text-xs text-[var(--emerald)] font-sans font-semibold flex items-center gap-0.5"><TrendingUp className="w-3 h-3" /> +3 vs dernier mois</p>
                 </FieldCard>
                 <FieldCard title="PV émis">
-                    <p className="text-3xl font-extrabold text-inspect-red">4</p>
-                    <p className="text-xs text-gray-500">ce mois</p>
-                    <p className="text-xs text-gray-400">2.5M FCFA</p>
+                    <p className="text-3xl font-bold text-[var(--rose)] font-sans">4</p>
+                    <p className="text-xs text-[var(--text-muted)] font-sans">ce mois</p>
+                    <p className="text-xs text-[var(--text-muted)] font-sans opacity-60">2.5M FCFA</p>
                 </FieldCard>
                 <FieldCard title="Conformité">
-                    <p className="text-3xl font-extrabold text-inspect-blue">73%</p>
-                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden mt-1">
-                        <div className="h-full bg-inspect-blue rounded-full" style={{ width: '73%' }} />
+                    <p className="text-3xl font-bold text-[var(--blue)] font-sans">73%</p>
+                    <div className="h-2 bg-[var(--bg-muted)] rounded-full overflow-hidden mt-1">
+                        <div className="h-full bg-[var(--blue)] rounded-full" style={{ width: '73%' }} />
                     </div>
                 </FieldCard>
                 <FieldCard title="Sync">
-                    <p className="text-3xl font-extrabold text-inspect-orange">16</p>
-                    <p className="text-xs text-gray-500">en attente</p>
-                    <p className="text-xs text-gray-400">Dernière : 08:32</p>
+                    <p className="text-3xl font-bold text-[var(--amber)] font-sans">16</p>
+                    <p className="text-xs text-[var(--text-muted)] font-sans">en attente</p>
+                    <p className="text-xs text-[var(--text-muted)] font-sans opacity-60">Dernière : 08:32</p>
                 </FieldCard>
             </div>
 
             {/* Section 3 — En cours */}
             {EN_COURS.length > 0 && (
                 <div>
-                    <h2 className="text-lg font-bold text-gray-800 mb-3">📝 Inspections en cours ({EN_COURS.length})</h2>
+                    <h2 className="font-serif font-bold text-[var(--text)] text-xl mb-3">📝 Inspections en cours ({EN_COURS.length})</h2>
                     {EN_COURS.map((ec) => (
-                        <Link key={ec.id} href="/inspections/en-cours" className="block bg-white rounded-xl border border-gray-200 p-4 hover:shadow-md transition-shadow">
+                        <Link key={ec.id} href="/inspections/en-cours" className="block neu-card p-4 hover:shadow-elegant transition-shadow">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="font-mono text-sm font-bold text-gray-700">{ec.ref}</p>
-                                    <p className="font-semibold text-gray-900">{ec.etab}</p>
-                                    <p className="text-xs text-gray-500">{ec.progression} points — {ec.date}</p>
+                                    <p className="font-mono text-sm font-bold text-[var(--text-muted)]">{ec.ref}</p>
+                                    <p className="font-sans font-semibold text-[var(--text)]">{ec.etab}</p>
+                                    <p className="text-xs text-[var(--text-muted)] font-sans">{ec.progression} points — {ec.date}</p>
                                 </div>
-                                <div className="flex items-center gap-2 text-inspect-green font-bold text-sm">
-                                    Reprendre <ArrowRight className="w-4 h-4" />
+                                <div className="flex items-center gap-2 text-[var(--amber)] font-sans font-bold text-sm">
+                                    Reprendre <ArrowRight className="w-4 h-4" strokeWidth={1.8} />
                                 </div>
                             </div>
                         </Link>
@@ -154,19 +154,19 @@ export default function DashboardPage() {
 
             {/* Section 4 — Quick actions */}
             <div>
-                <h2 className="text-lg font-bold text-gray-800 mb-3">⚡ Actions rapides</h2>
+                <h2 className="font-serif font-bold text-[var(--text)] text-xl mb-3">⚡ Actions rapides</h2>
                 <div className="grid grid-cols-3 gap-3">
                     {[
-                        { href: '/inspections/nouvelle', icon: <ClipboardCheck className="w-10 h-10" />, label: 'Nouvelle inspection', color: 'text-inspect-green' },
-                        { href: '/pv', icon: <FileText className="w-10 h-10" />, label: 'Mes PV', color: 'text-inspect-red' },
-                        { href: '/carte', icon: <Map className="w-10 h-10" />, label: 'Carte terrain', color: 'text-inspect-blue' },
-                        { href: '/superviseur/planning', icon: <Calendar className="w-10 h-10" />, label: 'Mon planning', color: 'text-inspect-orange' },
-                        { href: '/sync', icon: <RefreshCw className="w-10 h-10" />, label: 'Synchroniser', color: 'text-gray-600' },
-                        { href: '/inspections', icon: <BarChart3 className="w-10 h-10" />, label: 'Mes stats', color: 'text-purple-600' },
+                        { href: '/inspections/nouvelle', icon: <ClipboardCheck className="w-8 h-8" strokeWidth={1.8} />, label: 'Nouvelle inspection', color: 'var(--emerald)' },
+                        { href: '/pv', icon: <FileText className="w-8 h-8" strokeWidth={1.8} />, label: 'Mes PV', color: 'var(--rose)' },
+                        { href: '/carte', icon: <Map className="w-8 h-8" strokeWidth={1.8} />, label: 'Carte terrain', color: 'var(--blue)' },
+                        { href: '/superviseur/planning', icon: <Calendar className="w-8 h-8" strokeWidth={1.8} />, label: 'Mon planning', color: 'var(--amber)' },
+                        { href: '/sync', icon: <RefreshCw className="w-8 h-8" strokeWidth={1.8} />, label: 'Synchroniser', color: 'var(--text-muted)' },
+                        { href: '/inspections', icon: <BarChart3 className="w-8 h-8" strokeWidth={1.8} />, label: 'Mes stats', color: 'var(--violet)' },
                     ].map((a) => (
-                        <Link key={a.href} href={a.href} className="bg-white rounded-xl border-2 border-gray-200 p-4 flex flex-col items-center justify-center gap-2 hover:shadow-md transition-shadow aspect-square">
-                            <span className={a.color}>{a.icon}</span>
-                            <span className="text-xs font-bold text-gray-700 text-center leading-tight">{a.label}</span>
+                        <Link key={a.href} href={a.href} className="neu-card p-4 flex flex-col items-center justify-center gap-2 aspect-square">
+                            <span style={{ color: a.color }}>{a.icon}</span>
+                            <span className="text-xs font-sans font-bold text-[var(--text)] text-center leading-tight">{a.label}</span>
                         </Link>
                     ))}
                 </div>
@@ -174,14 +174,14 @@ export default function DashboardPage() {
 
             {/* Section 5 — Timeline */}
             <div>
-                <h2 className="text-lg font-bold text-gray-800 mb-3">📊 Activité récente</h2>
-                <div className="bg-white rounded-xl border border-gray-200 divide-y divide-gray-100">
+                <h2 className="font-serif font-bold text-[var(--text)] text-xl mb-3">📊 Activité récente</h2>
+                <div className="neu-card divide-y divide-[var(--border)] overflow-hidden">
                     {TIMELINE.map((t, i) => (
                         <div key={i} className="flex items-start gap-3 px-4 py-3">
                             <span className="text-lg mt-0.5">{t.icon}</span>
                             <div className="flex-1">
-                                <p className="text-sm text-gray-800">{t.text}</p>
-                                <p className="text-xs text-gray-400 mt-0.5">{t.temps}</p>
+                                <p className="text-sm text-[var(--text)] font-sans">{t.text}</p>
+                                <p className="text-xs text-[var(--text-muted)] font-sans mt-0.5">{t.temps}</p>
                             </div>
                         </div>
                     ))}

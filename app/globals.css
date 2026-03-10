@@ -1,42 +1,233 @@
+/* ══════════════════════════════════════════════════
+   AGASA Design System — AGASA-Inspect
+   ══════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ── 1. Design Tokens (Light Mode) ── */
 @layer base {
   :root {
-    --background: #FFFFFF;
-    --foreground: #111827;
+    /* Fonts */
+    --font-serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+    --font-sans: 'DM Sans', 'Segoe UI', system-ui, sans-serif;
+
+    /* Backgrounds */
+    --bg: hsl(220, 20%, 97%);
+    --bg-card: hsl(0, 0%, 100%);
+    --bg-muted: hsl(220, 14%, 95%);
+
+    /* Text */
+    --text: hsl(230, 30%, 16%);
+    --text-muted: hsl(220, 9%, 46%);
+    --text-on-dark: hsl(215, 25%, 90%);
+
+    /* Institutional Colors */
+    --primary: hsl(222, 47%, 18%);
+    --blue: hsl(217, 91%, 60%);
+    --emerald: hsl(160, 84%, 39%);
+    --amber: hsl(38, 92%, 50%);
+    --rose: hsl(350, 89%, 60%);
+    --cyan: hsl(189, 94%, 43%);
+    --violet: hsl(258, 90%, 66%);
+    --teal: hsl(168, 76%, 42%);
+    --gold: hsl(48, 96%, 53%);
+
+    /* Borders & Surfaces */
+    --border: hsl(220, 13%, 91%);
+    --ring: hsl(217, 91%, 60%);
+
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(26, 39, 54, 0.06);
+    --shadow-md: 0 4px 24px -4px rgba(26, 39, 54, 0.10);
+    --shadow-elegant: 0 10px 40px -10px rgba(26, 39, 54, 0.18);
+    --shadow-glow: 0 8px 32px rgba(16, 185, 129, 0.30);
+
+    /* Neumorphism */
+    --neu-light: rgba(255, 255, 255, 1);
+    --neu-dark: rgba(0, 0, 0, 0.06);
+
+    /* Legacy compat */
+    --background: var(--bg);
+    --foreground: var(--text);
+  }
+
+  /* ── Dark Mode ── */
+  [data-theme="dark"],
+  .dark {
+    --bg: hsl(222, 47%, 7%);
+    --bg-card: hsl(222, 40%, 13%);
+    --bg-muted: hsl(222, 47%, 9%);
+
+    --text: hsl(215, 25%, 90%);
+    --text-muted: hsl(215, 16%, 65%);
+    --text-on-dark: hsl(215, 25%, 90%);
+
+    --border: hsl(217, 33%, 17%);
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.20);
+    --shadow-md: 0 4px 24px -4px rgba(0, 0, 0, 0.35);
+    --shadow-elegant: 0 10px 40px -10px rgba(0, 0, 0, 0.50);
+    --shadow-glow: 0 8px 32px rgba(16, 185, 129, 0.25);
+
+    --neu-light: rgba(255, 255, 255, 0.04);
+    --neu-dark: rgba(0, 0, 0, 0.25);
   }
 }
 
+/* ── 2. Base Styles ── */
 body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: system-ui, -apple-system, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
   font-size: 16px;
+  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
 }
 
-/* Inputs optimized for touch */
+/* ── 3. Typography Scale (§2.4) ── */
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+}
+
+h1 {
+  font-size: clamp(36px, 6vw, 72px);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+h2 {
+  font-size: clamp(28px, 4vw, 44px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+h3 {
+  font-size: clamp(22px, 2.5vw, 28px);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+h4 {
+  font-size: clamp(17px, 1.5vw, 20px);
+  line-height: 1.3;
+}
+
+p {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* Lead paragraph */
+.text-lead {
+  font-size: 18px;
+  line-height: 1.65;
+  font-weight: 400;
+}
+
+/* Overline / Section sur-titre */
+.overline {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* Reading width constraint */
+.prose-width {
+  max-width: 640px;
+}
+
+/* Inputs optimized for touch — AGASA-Inspect: 18px recommended */
 input,
 select,
 textarea {
   font-size: 18px !important;
+  font-family: var(--font-sans);
 }
 
-/* Very clear focus state */
+/* Labels above fields always */
+label {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+/* ── 4. Focus & Accessibility ── */
 *:focus-visible {
-  outline: 3px solid #0D47A1;
+  outline: 2px solid var(--ring);
   outline-offset: 2px;
 }
 
-/* Reduced motion */
+/* ── 5. Animations (§5) ── */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(-24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.5; transform: scale(1.5); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25%      { transform: translateX(-8px); }
+  75%      { transform: translateX(8px); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(2rem); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Stagger delays for card grids */
+.stagger-1 { animation-delay: 0.0s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.2s; }
+.stagger-4 { animation-delay: 0.3s; }
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+/* Accessibility: reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  * {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -44,58 +235,178 @@ textarea {
   }
 }
 
-@keyframes shake {
+/* ── 6. Surface Effects ── */
 
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-
-  25% {
-    transform: translateX(-8px);
-  }
-
-  75% {
-    transform: translateX(8px);
-  }
+/* Glassmorphism (header sticky & modals only) */
+.glass {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px) saturate(1.8);
+  -webkit-backdrop-filter: blur(16px) saturate(1.8);
+  border-bottom: 1px solid var(--border);
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(2rem);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+[data-theme="dark"] .glass,
+.dark .glass {
+  background: rgba(19, 27, 46, 0.75);
 }
 
-.animate-fadeInUp {
-  animation: fadeInUp 0.7s ease-out forwards;
+/* Neumorphism (cards only, never on forms) */
+.neu-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow:
+    inset 2px 2px 6px var(--neu-light),
+    inset -2px -2px 6px var(--neu-dark),
+    0 1px 3px var(--neu-dark);
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.animate-shake {
-  animation: shake 0.4s ease-in-out;
+.neu-card:hover {
+  box-shadow: var(--shadow-elegant);
+  transform: translateY(-4px);
 }
 
-/* Thick scrollbar for touch */
+/* Gradients */
+.gradient-agasa {
+  background: linear-gradient(135deg, var(--emerald), var(--blue));
+}
+
+.gradient-hero {
+  background: linear-gradient(135deg, #0a1628 0%, #112240 40%, #0d3b2e 100%);
+}
+
+/* AGASA-Inspect specific hero (amber tint) */
+.gradient-hero-inspect {
+  background: linear-gradient(135deg, #0a1628 0%, #112240 40%, #3b2e0d 100%);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--emerald), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-inspect {
+  background: linear-gradient(135deg, var(--amber), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── 7. Component Classes ── */
+
+/* Primary CTA Button */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--emerald), var(--blue));
+  box-shadow: var(--shadow-glow);
+  border: none;
+  cursor: pointer;
+  min-height: 48px;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(16, 185, 129, 0.4);
+}
+
+/* AGASA-Inspect: bigger buttons */
+.btn-primary-inspect {
+  min-height: 56px;
+  font-size: 16px;
+  padding: 16px 32px;
+}
+
+/* Outline button */
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  min-height: 48px;
+  transition: all 0.3s ease;
+}
+
+/* Outline on dark backgrounds */
+.btn-outline-dark {
+  color: rgba(255, 255, 255, 0.85);
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+}
+
+/* Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Pulse dot (new badge) */
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--emerald);
+  animation: pulse 2s infinite;
+}
+
+/* Icon container */
+.icon-container {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.icon-container:hover {
+  transform: scale(1.1);
+}
+
+/* ── 8. Scrollbar ── */
 ::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #E5E7EB;
+  background: var(--bg-muted);
   border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #9CA3AF;
+  background: var(--text-muted);
   border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #6B7280;
+  background: var(--text);
 }

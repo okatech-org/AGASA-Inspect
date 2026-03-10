@@ -8,24 +8,30 @@ interface StatusBadgeProps {
     label?: string;
 }
 
-const CONFIG: Record<string, { label: string; classes: string }> = {
-    brouillon: { label: "Brouillon", classes: "bg-gray-100 text-gray-800 border-gray-300" },
-    en_cours: { label: "En cours", classes: "bg-blue-100 text-blue-800 border-blue-300" },
-    terminee: { label: "Terminée", classes: "bg-green-100 text-green-800 border-green-300" },
-    validee: { label: "Validée", classes: "bg-inspect-green text-white border-green-800" },
-    synchronisee: { label: "Synchronisée ✓", classes: "bg-green-50 text-inspect-green border-inspect-green" },
-    success: { label: "Actif", classes: "bg-green-100 text-green-800 border-green-300" },
-    danger: { label: "Erreur", classes: "bg-red-100 text-red-800 border-red-300" },
-    warning: { label: "Attention", classes: "bg-orange-100 text-orange-800 border-orange-300" },
-    info: { label: "Info", classes: "bg-blue-100 text-blue-800 border-blue-300" },
-    default: { label: "—", classes: "bg-gray-100 text-gray-600 border-gray-300" },
+const CONFIG: Record<string, { label: string; bg: string; text: string }> = {
+    brouillon: { label: "Brouillon", bg: "rgba(107,114,128,0.14)", text: "var(--text-muted)" },
+    en_cours: { label: "En cours", bg: "rgba(59,130,246,0.14)", text: "var(--blue)" },
+    terminee: { label: "Terminée", bg: "rgba(16,185,129,0.14)", text: "var(--emerald)" },
+    validee: { label: "Validée", bg: "var(--emerald)", text: "#ffffff" },
+    synchronisee: { label: "Synchronisée ✓", bg: "rgba(16,185,129,0.14)", text: "var(--emerald)" },
+    success: { label: "Actif", bg: "rgba(16,185,129,0.14)", text: "var(--emerald)" },
+    danger: { label: "Erreur", bg: "rgba(244,63,94,0.14)", text: "var(--rose)" },
+    warning: { label: "Attention", bg: "rgba(245,158,11,0.14)", text: "var(--amber)" },
+    info: { label: "Info", bg: "rgba(59,130,246,0.14)", text: "var(--blue)" },
+    default: { label: "—", bg: "rgba(107,114,128,0.14)", text: "var(--text-muted)" },
 };
 
 export function StatusBadge({ status, label }: StatusBadgeProps) {
     const cfg = CONFIG[status] || CONFIG.default;
 
     return (
-        <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${cfg.classes}`}>
+        <span
+            className="badge"
+            style={{
+                backgroundColor: cfg.bg,
+                color: cfg.text,
+            }}
+        >
             {label || cfg.label}
         </span>
     );

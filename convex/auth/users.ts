@@ -4,9 +4,9 @@ import { mutation, query } from "../_generated/server";
 import { v } from "convex/values";
 import bcrypt from "bcryptjs";
 import { Id } from "../_generated/dataModel";
+import crypto from "crypto";
 
 export const loginUser = mutation({
-    // ... (keeping loginUser as is up to verifyPin)
     args: {
         matricule: v.string(),
         motDePasse: v.string(),
@@ -14,7 +14,7 @@ export const loginUser = mutation({
     handler: async (ctx, args) => {
         const user = await ctx.db
             .query("users")
-            .filter((q) => q.eq(q.field("matricule"), args.matricule))
+            .withIndex("by_matricule", (q) => q.eq("matricule", args.matricule))
             .first();
 
         if (!user) {
@@ -64,7 +64,25 @@ export const loginUser = mutation({
             modifieLe: Date.now(),
         });
 
-        const token = crypto.randomUUID();
+        // Invalide les anciennes sessions de l'utilisateur avant d'en créer une nouvelle.
+        const oldSessions = await ctx.db
+            .query("sessions")
+            .withIndex("by_userId", (q) => q.eq("userId", String(user._id)))
+            .collect();
+        for (const session of oldSessions) {
+            await ctx.db.delete(session._id);
+        }
+
+        const token = crypto.randomBytes(32).toString("hex");
+        const now = Date.now();
+        const twelveHours = 12 * 60 * 60 * 1000;
+
+        await ctx.db.insert("sessions", {
+            userId: String(user._id),
+            token,
+            creeLe: now,
+            expireLe: now + twelveHours,
+        });
 
         await ctx.db.insert("auditLogs", {
             userId: user._id,
@@ -126,13 +144,13 @@ export const verifyPin = mutation({
 });
 
 export const getCurrentUser = query({
-    args: { sessionToken: v.string() },
+    args: { sessionToken: v.optional(v.string()) },
     handler: async (ctx, args) => {
         if (!args.sessionToken) return null;
 
         const session = await ctx.db
             .query("sessions")
-            .filter((q) => q.eq(q.field("token"), args.sessionToken))
+            .withIndex("by_token", (q) => q.eq("token", args.sessionToken!))
             .first();
 
         if (!session || session.expireLe <= Date.now()) {

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { db } from './offline/db';
 import { RoleType, ROLE_PERMISSIONS } from './roles';
+import bcrypt from 'bcryptjs';
 
 export interface UserProfile {
     id: string;
@@ -47,9 +48,10 @@ export function useAuth() {
         loadSession();
     }, []);
 
-    const login = async (token: string, profile: UserProfile, passwordHash: string, pinHash: string) => {
+    const login = async (token: string, profile: UserProfile, passwordHash?: string, pinHash?: string) => {
         setUser(profile);
-        document.cookie = `agasa-inspect-session=${token}; path=/; max-age=43200`; // 12h
+        const secure = typeof window !== 'undefined' && window.location.protocol === 'https:' ? '; secure' : '';
+        document.cookie = `agasa-inspect-session=${token}; path=/; max-age=43200; samesite=lax${secure}`; // 12h
 
         try {
             await db.localUser.put({
@@ -69,7 +71,7 @@ export function useAuth() {
     };
 
     const logout = async () => {
-        document.cookie = 'agasa-inspect-session=; path=/; max-age=0';
+        document.cookie = 'agasa-inspect-session=; path=/; max-age=0; samesite=lax';
         try {
             await db.localUser.delete("session");
         } catch { }
@@ -78,8 +80,9 @@ export function useAuth() {
     };
 
     const verifyPin = async (pin: string) => {
-        // Basic mock implementation for now until Convex + local bcrypt caching is wired
-        return pin === "1234";
+        const cached = await db.localUser.get("session");
+        if (!cached?.pinHash) return false;
+        return await bcrypt.compare(pin, cached.pinHash);
     };
 
     return { user, isLoading, isAuthenticated: !!user, role: user?.role, isOnline, login, logout, verifyPin };

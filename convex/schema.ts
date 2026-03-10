@@ -21,7 +21,9 @@ export default defineSchema({
         creePar: v.string(),
         creeLe: v.number(),
         modifieLe: v.number(),
-    }),
+    })
+        .index("by_matricule", ["matricule"])
+        .index("by_email", ["email"]),
 
     etablissements: defineTable({
         nom: v.string(),
@@ -260,6 +262,61 @@ export default defineSchema({
         timestamp: v.number(),
     }),
 
+    signaux: defineTable({
+        type: v.string(),
+        source: v.string(),
+        destination: v.optional(v.string()),
+        entiteType: v.optional(v.string()),
+        entiteId: v.optional(v.string()),
+        payload: v.any(),
+        confiance: v.number(),
+        priorite: v.union(
+            v.literal("LOW"),
+            v.literal("NORMAL"),
+            v.literal("HIGH"),
+            v.literal("CRITICAL")
+        ),
+        correlationId: v.string(),
+        traite: v.boolean(),
+        timestamp: v.number(),
+    })
+        .index("by_type", ["type"])
+        .index("by_timestamp", ["timestamp"])
+        .index("by_non_traite", ["traite", "timestamp"])
+        .index("by_correlation", ["correlationId"]),
+
+    historiqueActions: defineTable({
+        action: v.string(),
+        categorie: v.string(),
+        entiteType: v.string(),
+        entiteId: v.optional(v.string()),
+        userId: v.optional(v.string()),
+        details: v.any(),
+        metadata: v.optional(v.any()),
+        timestamp: v.number(),
+    })
+        .index("by_entite", ["entiteType", "entiteId"])
+        .index("by_user", ["userId", "timestamp"])
+        .index("by_timestamp", ["timestamp"])
+        .index("by_categorie", ["categorie"]),
+
+    fluxInterApps: defineTable({
+        fluxCode: v.literal("F3"),
+        direction: v.union(v.literal("envoi"), v.literal("reception")),
+        typeMessage: v.string(),
+        payload: v.string(),
+        statut: v.union(
+            v.literal("envoye"),
+            v.literal("recu"),
+            v.literal("traite"),
+            v.literal("erreur")
+        ),
+        dateEnvoi: v.optional(v.number()),
+        dateReception: v.optional(v.number()),
+        tentatives: v.optional(v.number()),
+        erreur: v.optional(v.string()),
+    }),
+
     configSysteme: defineTable({
         cle: v.string(),
         valeur: v.string(),
@@ -276,5 +333,7 @@ export default defineSchema({
         ipAddress: v.optional(v.string()),
         creeLe: v.number(),
         expireLe: v.number(),
-    }),
+    })
+        .index("by_token", ["token"])
+        .index("by_userId", ["userId"]),
 });

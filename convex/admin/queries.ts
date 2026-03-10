@@ -1,8 +1,11 @@
 import { query } from "../_generated/server";
 import { v } from "convex/values";
+import { requireAdminSession } from "./_auth";
 
 export const getDashboardStats = query({
-    handler: async (ctx) => {
+    args: { sessionToken: v.string() },
+    handler: async (ctx, args) => {
+        await requireAdminSession(ctx, args.sessionToken);
         const [users, etabs, inspections, pvList, auditLogs] = await Promise.all([
             ctx.db.query("users").collect(),
             ctx.db.query("etablissements").collect(),
@@ -26,32 +29,41 @@ export const getDashboardStats = query({
 });
 
 export const getAllUsers = query({
-    handler: async (ctx) => {
+    args: { sessionToken: v.string() },
+    handler: async (ctx, args) => {
+        await requireAdminSession(ctx, args.sessionToken);
         return await ctx.db.query("users").collect();
     },
 });
 
 export const getAllEtablissements = query({
-    handler: async (ctx) => {
+    args: { sessionToken: v.string() },
+    handler: async (ctx, args) => {
+        await requireAdminSession(ctx, args.sessionToken);
         return await ctx.db.query("etablissements").collect();
     },
 });
 
 export const getChecklistModeles = query({
-    handler: async (ctx) => {
+    args: { sessionToken: v.string() },
+    handler: async (ctx, args) => {
+        await requireAdminSession(ctx, args.sessionToken);
         return await ctx.db.query("checklistModeles").collect();
     },
 });
 
 export const getBaremeAmendes = query({
-    handler: async (ctx) => {
+    args: { sessionToken: v.string() },
+    handler: async (ctx, args) => {
+        await requireAdminSession(ctx, args.sessionToken);
         return await ctx.db.query("baremeAmendes").collect();
     },
 });
 
 export const getAuditLogs = query({
-    args: { limit: v.optional(v.number()) },
+    args: { sessionToken: v.string(), limit: v.optional(v.number()) },
     handler: async (ctx, args) => {
+        await requireAdminSession(ctx, args.sessionToken);
         return await ctx.db
             .query("auditLogs")
             .order("desc")
@@ -60,13 +72,17 @@ export const getAuditLogs = query({
 });
 
 export const getConfigSysteme = query({
-    handler: async (ctx) => {
+    args: { sessionToken: v.string() },
+    handler: async (ctx, args) => {
+        await requireAdminSession(ctx, args.sessionToken);
         return await ctx.db.query("configSysteme").collect();
     },
 });
 
 export const getSyncQueue = query({
-    handler: async (ctx) => {
+    args: { sessionToken: v.string() },
+    handler: async (ctx, args) => {
+        await requireAdminSession(ctx, args.sessionToken);
         return await ctx.db
             .query("syncQueue")
             .order("desc")

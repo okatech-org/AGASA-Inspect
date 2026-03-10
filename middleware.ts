@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
+    const enableDemoMode = process.env.NEXT_PUBLIC_ENABLE_DEMO_MODE === "true";
 
     // Static files and Next.js internals bypass
     if (
@@ -13,11 +14,17 @@ export function middleware(request: NextRequest) {
     }
 
     // Session check
-    const sessionToken = request.cookies.get('agasa-inspect-session');
-    const isAuthenticated = !!sessionToken;
+    const sessionToken = request.cookies.get('agasa-inspect-session')?.value;
+    const isDemoToken = !!sessionToken && sessionToken.startsWith("demo-");
+    const isSessionToken = !!sessionToken && /^[a-f0-9]{64}$/i.test(sessionToken);
+    const isAuthenticated = isSessionToken || (enableDemoMode && isDemoToken);
+
+    if (!enableDemoMode && pathname.startsWith('/demo')) {
+        return NextResponse.redirect(new URL('/login', request.url));
+    }
 
     // 1. Pages publiques
-    if (pathname === '/' || pathname.startsWith('/a-propos') || pathname.startsWith('/fonctionnalites') || pathname.startsWith('/contact') || pathname.startsWith('/demo')) {
+    if (pathname === '/' || pathname.startsWith('/a-propos') || pathname.startsWith('/fonctionnalites') || pathname.startsWith('/contact') || (enableDemoMode && pathname.startsWith('/demo'))) {
         return NextResponse.next();
     }
 
@@ -30,7 +37,7 @@ export function middleware(request: NextRequest) {
     }
 
     // 3. Protected routes (app)
-    if (!isAuthenticated && !pathname.startsWith('/demo')) {
+    if (!isAuthenticated && !(enableDemoMode && pathname.startsWith('/demo'))) {
         const url = new URL('/login', request.url);
         url.searchParams.set('callbackUrl', encodeURI(pathname));
         return NextResponse.redirect(url);

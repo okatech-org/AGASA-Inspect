@@ -1,5 +1,7 @@
 import { mutation, query } from "../_generated/server";
 import { v } from "convex/values";
+import { internal } from "../_generated/api";
+import { CATEGORIES_ACTION, CORTEX, SIGNAL_TYPES, genererCorrelationId } from "../lib/neocortex";
 
 export const syncInspection = mutation({
     args: {
@@ -8,6 +10,8 @@ export const syncInspection = mutation({
     handler: async (ctx, args) => {
         const inspection = JSON.parse(args.data);
         const now = Date.now();
+        let entityId: string | undefined;
+        let mode: "created" | "updated" = "created";
 
         // Check if already exists (idempotent)
         const existing = await ctx.db
@@ -23,16 +27,19 @@ export const syncInspection = mutation({
                 dateSynchronisation: now,
                 modifieLe: now,
             });
-            return { status: "updated", id: existing._id };
+            entityId = String(existing._id);
+            mode = "updated";
+        } else {
+            const id = await ctx.db.insert("inspections", {
+                ...inspection,
+                synchronisee: true,
+                dateSynchronisation: now,
+                creeLe: now,
+                modifieLe: now,
+            });
+            entityId = String(id);
+            mode = "created";
         }
-
-        const id = await ctx.db.insert("inspections", {
-            ...inspection,
-            synchronisee: true,
-            dateSynchronisation: now,
-            creeLe: now,
-            modifieLe: now,
-        });
 
         await ctx.db.insert("auditLogs", {
             userId: inspection.inspecteurId || "system",
@@ -43,7 +50,59 @@ export const syncInspection = mutation({
             timestamp: now,
         });
 
-        return { status: "created", id };
+        await ctx.db.insert("signaux", {
+            type: SIGNAL_TYPES.INSPECTION_SYNC,
+            source: CORTEX.SYNC,
+            destination: CORTEX.GATEWAY,
+            entiteType: "inspections",
+            entiteId: entityId,
+            payload: { reference: inspection.reference, mode },
+            confiance: 1,
+            priorite: "NORMAL",
+            correlationId: genererCorrelationId(),
+            traite: false,
+            timestamp: now,
+        });
+
+        await ctx.db.insert("historiqueActions", {
+            action: "SYNC_INSPECTION",
+            categorie: CATEGORIES_ACTION.SYSTEME,
+            entiteType: "inspections",
+            entiteId: entityId,
+            userId: inspection.inspecteurId || "system",
+            details: { reference: inspection.reference, mode },
+            metadata: { source: CORTEX.SYNC },
+            timestamp: now,
+        });
+
+        const payload = {
+            type: "rapport_inspection",
+            reference: inspection.reference,
+            inspecteurId: inspection.inspecteurId,
+            etablissementId: inspection.etablissementId,
+            statut: inspection.statut,
+            scoreConformite: inspection.scoreConformite,
+            dateSynchronisation: now,
+        };
+
+        const fluxRefId = await ctx.db.insert("fluxInterApps", {
+            fluxCode: "F3",
+            direction: "envoi",
+            typeMessage: "rapport_inspection",
+            payload: JSON.stringify(payload),
+            statut: "envoye",
+            dateEnvoi: now,
+            tentatives: 0,
+        });
+
+        const internalApi = internal as any;
+        await ctx.scheduler.runAfter(0, internalApi.sync.outbound.pushToCore, {
+            typeMessage: "rapport_inspection",
+            payload,
+            fluxRefId,
+        });
+
+        return { status: mode, id: entityId };
     },
 });
 
@@ -54,6 +113,8 @@ export const syncPV = mutation({
     handler: async (ctx, args) => {
         const pv = JSON.parse(args.data);
         const now = Date.now();
+        let entityId: string | undefined;
+        let mode: "created" | "updated" | "conflict_server_wins" = "created";
 
         const existing = await ctx.db
             .query("pvElectroniques")
@@ -63,22 +124,27 @@ export const syncPV = mutation({
         if (existing) {
             // PV already validated server-side? Don't overwrite
             if (existing.verrouille && !pv.verrouille) {
-                return { status: "conflict_server_wins", id: existing._id };
+                mode = "conflict_server_wins";
+                entityId = String(existing._id);
+            } else {
+                await ctx.db.patch(existing._id, {
+                    ...pv,
+                    synchronise: true,
+                    dateSynchronisation: now,
+                });
+                mode = "updated";
+                entityId = String(existing._id);
             }
-            await ctx.db.patch(existing._id, {
+        } else {
+            const id = await ctx.db.insert("pvElectroniques", {
                 ...pv,
                 synchronise: true,
                 dateSynchronisation: now,
+                creeLe: now,
             });
-            return { status: "updated", id: existing._id };
+            entityId = String(id);
+            mode = "created";
         }
-
-        const id = await ctx.db.insert("pvElectroniques", {
-            ...pv,
-            synchronise: true,
-            dateSynchronisation: now,
-            creeLe: now,
-        });
 
         await ctx.db.insert("auditLogs", {
             userId: pv.inspecteurId || "system",
@@ -90,7 +156,58 @@ export const syncPV = mutation({
             timestamp: now,
         });
 
-        return { status: "created", id };
+        await ctx.db.insert("signaux", {
+            type: SIGNAL_TYPES.PV_SYNC,
+            source: CORTEX.SYNC,
+            destination: CORTEX.GATEWAY,
+            entiteType: "pvElectroniques",
+            entiteId: entityId,
+            payload: { reference: pv.reference, mode },
+            confiance: 1,
+            priorite: mode === "conflict_server_wins" ? "HIGH" : "NORMAL",
+            correlationId: genererCorrelationId(),
+            traite: false,
+            timestamp: now,
+        });
+
+        await ctx.db.insert("historiqueActions", {
+            action: "SYNC_PV",
+            categorie: CATEGORIES_ACTION.SYSTEME,
+            entiteType: "pvElectroniques",
+            entiteId: entityId,
+            userId: pv.inspecteurId || "system",
+            details: { reference: pv.reference, mode },
+            metadata: { source: CORTEX.SYNC },
+            timestamp: now,
+        });
+
+        const payload = {
+            type: "pv_amende",
+            reference: pv.reference,
+            inspecteurId: pv.inspecteurId,
+            totalAmende: pv.totalAmende,
+            statut: pv.statut,
+            dateSynchronisation: now,
+        };
+
+        const fluxRefId = await ctx.db.insert("fluxInterApps", {
+            fluxCode: "F3",
+            direction: "envoi",
+            typeMessage: "pv_amende",
+            payload: JSON.stringify(payload),
+            statut: "envoye",
+            dateEnvoi: now,
+            tentatives: 0,
+        });
+
+        const internalApi = internal as any;
+        await ctx.scheduler.runAfter(0, internalApi.sync.outbound.pushToCore, {
+            typeMessage: "pv_amende",
+            payload,
+            fluxRefId,
+        });
+
+        return { status: mode, id: entityId };
     },
 });
 
@@ -122,6 +239,62 @@ export const syncPhoto = mutation({
             ...args,
             synchronisee: true,
             creeLe: now,
+        });
+
+        await ctx.db.insert("signaux", {
+            type: SIGNAL_TYPES.PHOTO_SYNC,
+            source: CORTEX.SYNC,
+            destination: CORTEX.HIPPOCAMPE,
+            entiteType: "photosInspection",
+            entiteId: String(id),
+            payload: {
+                inspectionId: args.inspectionId,
+                hash: args.hash,
+            },
+            confiance: 0.95,
+            priorite: "LOW",
+            correlationId: genererCorrelationId(),
+            traite: false,
+            timestamp: now,
+        });
+
+        await ctx.db.insert("historiqueActions", {
+            action: "SYNC_PHOTO",
+            categorie: CATEGORIES_ACTION.SYSTEME,
+            entiteType: "photosInspection",
+            entiteId: String(id),
+            userId: args.inspecteurId,
+            details: {
+                inspectionId: args.inspectionId,
+                filename: args.filename,
+            },
+            metadata: { source: CORTEX.SYNC },
+            timestamp: now,
+        });
+
+        const payload = {
+            type: "echantillon_preleve",
+            inspectionId: args.inspectionId,
+            hash: args.hash,
+            inspecteurId: args.inspecteurId,
+            dateSynchronisation: now,
+        };
+
+        const fluxRefId = await ctx.db.insert("fluxInterApps", {
+            fluxCode: "F3",
+            direction: "envoi",
+            typeMessage: "echantillon_preleve",
+            payload: JSON.stringify(payload),
+            statut: "envoye",
+            dateEnvoi: now,
+            tentatives: 0,
+        });
+
+        const internalApi = internal as any;
+        await ctx.scheduler.runAfter(0, internalApi.sync.outbound.pushToCore, {
+            typeMessage: "echantillon_preleve",
+            payload,
+            fluxRefId,
         });
 
         return { status: "created", id };

@@ -43,7 +43,7 @@ export function TerrainSidebar({ role = "inspecteur" }: { role?: string }) {
     return (
         <aside
             className={cn(
-                "fixed left-0 top-16 h-[calc(100vh-64px)] bg-white border-r border-gray-200 z-30 transition-all duration-300 flex flex-col",
+                "fixed left-0 top-16 h-[calc(100vh-64px)] bg-[var(--bg-card)] border-r border-[var(--border)] z-30 transition-all duration-300 ease-agasa flex flex-col",
                 expanded ? "w-64" : "w-20"
             )}
         >
@@ -56,18 +56,18 @@ export function TerrainSidebar({ role = "inspecteur" }: { role?: string }) {
                             href={item.href}
                             title={item.name}
                             className={cn(
-                                "flex items-center gap-4 rounded-xl transition-colors min-h-[56px] px-4 no-underline",
+                                "flex items-center gap-4 rounded-xl transition-all duration-200 min-h-[56px] px-4 no-underline font-sans",
                                 isActive
-                                    ? "bg-inspect-green text-white"
+                                    ? "bg-[var(--amber)] text-white shadow-md"
                                     : item.highlight
-                                        ? "text-inspect-green bg-green-50 border-2 border-inspect-green hover:bg-green-100"
-                                        : "text-gray-600 hover:bg-gray-100",
+                                        ? "text-[var(--amber)] bg-[rgba(245,158,11,0.1)] border-2 border-[var(--amber)] hover:bg-[rgba(245,158,11,0.18)]"
+                                        : "text-[var(--text-muted)] hover:bg-[var(--bg-muted)] hover:text-[var(--text)]",
                                 !expanded && "justify-center px-0"
                             )}
                         >
-                            <item.icon className="w-8 h-8 flex-shrink-0" />
+                            <item.icon className="w-7 h-7 flex-shrink-0" strokeWidth={1.8} />
                             {expanded && (
-                                <span className={cn("font-bold text-lg whitespace-nowrap", isActive ? "text-white" : "text-gray-800")}>
+                                <span className={cn("font-semibold text-[15px] whitespace-nowrap", isActive ? "text-white" : "text-[var(--text)]")}>
                                     {item.name}
                                 </span>
                             )}
@@ -76,12 +76,12 @@ export function TerrainSidebar({ role = "inspecteur" }: { role?: string }) {
                 })}
             </div>
 
-            <div className="p-2 border-t border-gray-200">
+            <div className="p-2 border-t border-[var(--border)]">
                 <button
                     onClick={() => setExpanded(!expanded)}
-                    className="w-full flex justify-center items-center min-h-[56px] text-gray-500 hover:bg-gray-100 rounded-xl transition-colors border-none bg-transparent"
+                    className="w-full flex justify-center items-center min-h-[56px] text-[var(--text-muted)] hover:bg-[var(--bg-muted)] rounded-xl transition-colors border-none bg-transparent cursor-pointer"
                 >
-                    {expanded ? <ChevronLeft className="w-8 h-8" /> : <ChevronRight className="w-8 h-8" />}
+                    {expanded ? <ChevronLeft className="w-7 h-7" strokeWidth={1.8} /> : <ChevronRight className="w-7 h-7" strokeWidth={1.8} />}
                 </button>
             </div>
         </aside>

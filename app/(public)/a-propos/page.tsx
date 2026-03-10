@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import { Metadata } from 'next';
 import { Scale, MapPin, Building, Handshake, Code } from 'lucide-react';
 
@@ -14,107 +15,126 @@ const PROVINCES = [
 
 export default function AProposPage() {
     return (
-        <div className="pt-24 pb-20">
+        <div className="pt-28 pb-20">
             {/* Header */}
             <div className="max-w-4xl mx-auto px-4 text-center mb-16">
-                <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
-                    À propos
-                </h1>
-                <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                <span className="overline text-[var(--amber)]">L&apos;agence</span>
+                <h1 className="font-serif font-bold text-[var(--text)] mt-2">À propos</h1>
+                <p className="text-lead text-[var(--text-muted)] font-sans max-w-2xl mx-auto mt-4">
                     L&apos;Agence Gabonaise de Sécurité Alimentaire et sa mission de protection des consommateurs.
                 </p>
             </div>
 
-            <div className="max-w-5xl mx-auto px-4 space-y-16">
+            <div className="max-w-5xl mx-auto px-4 space-y-8">
                 {/* Mission */}
-                <section className="bg-white border-2 border-gray-100 rounded-3xl p-8 md:p-12">
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="w-12 h-12 bg-inspect-green/10 rounded-xl flex items-center justify-center">
-                            <Building className="w-6 h-6 text-inspect-green" />
-                        </div>
-                        <h2 className="text-2xl font-bold text-gray-900">Mission de l&apos;AGASA</h2>
+                <section className="neu-card overflow-hidden p-0">
+                    <div className="relative w-full aspect-[16/9]">
+                        <Image src="/images/gabon/gabon-public-service.jpg" alt="Mission AGASA" fill sizes="(max-width: 768px) 100vw, 900px" className="object-cover" />
                     </div>
-                    <p className="text-gray-700 leading-relaxed mb-4">
+                    <div className="p-8 md:p-12">
+                    <div className="flex items-center gap-4 mb-6">
+                        <div className="icon-container" style={{ background: 'rgba(16,185,129,0.12)' }}>
+                            <Building className="w-6 h-6 text-[var(--emerald)]" strokeWidth={1.8} />
+                        </div>
+                        <h2 className="font-serif font-bold text-[var(--text)] text-2xl">Mission de l&apos;AGASA</h2>
+                    </div>
+                    <p className="text-[var(--text-muted)] font-sans leading-relaxed mb-4">
                         L&apos;Agence Gabonaise de Sécurité Alimentaire (AGASA) est l&apos;organe national chargé d&apos;assurer la sécurité alimentaire et le contrôle sanitaire et phytosanitaire sur l&apos;ensemble du territoire gabonais.
                     </p>
-                    <p className="text-gray-700 leading-relaxed">
-                        La Direction des Inspections et du Contrôle Sanitaire et Phytosanitaire (DICSP) mobilise <strong>50 inspecteurs</strong> dans <strong>9 provinces</strong> pour surveiller les <strong>13 700 établissements</strong> alimentaires du pays.
+                    <p className="text-[var(--text-muted)] font-sans leading-relaxed">
+                        La Direction des Inspections et du Contrôle Sanitaire et Phytosanitaire (DICSP) mobilise <strong className="text-[var(--text)]">50 inspecteurs</strong> dans <strong className="text-[var(--text)]">9 provinces</strong> pour surveiller les <strong className="text-[var(--text)]">13 700 établissements</strong> alimentaires du pays.
                     </p>
+                    </div>
                 </section>
 
                 {/* Cadre juridique */}
-                <section className="bg-white border-2 border-gray-100 rounded-3xl p-8 md:p-12">
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="w-12 h-12 bg-inspect-blue/10 rounded-xl flex items-center justify-center">
-                            <Scale className="w-6 h-6 text-inspect-blue" />
-                        </div>
-                        <h2 className="text-2xl font-bold text-gray-900">Cadre juridique</h2>
+                <section className="neu-card overflow-hidden p-0">
+                    <div className="relative w-full aspect-[16/9]">
+                        <Image src="/images/gabon/gabon-compliance-council.jpg" alt="Cadre juridique AGASA" fill sizes="(max-width: 768px) 100vw, 900px" className="object-cover" />
                     </div>
-                    <ul className="space-y-3 text-gray-700">
-                        <li className="flex items-start gap-3">
-                            <span className="text-inspect-blue font-bold mt-1">•</span>
-                            <span><strong>Ordonnance 50/78</strong> — Texte fondateur du contrôle sanitaire au Gabon</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                            <span className="text-inspect-blue font-bold mt-1">•</span>
-                            <span><strong>Décrets 2015</strong> — Organisation de l&apos;AGASA et attribution des compétences d&apos;inspection</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                            <span className="text-inspect-blue font-bold mt-1">•</span>
-                            <span><strong>Loi 040/2018</strong> — Cadre réglementaire des amendes et sanctions</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                            <span className="text-inspect-blue font-bold mt-1">•</span>
-                            <span><strong>Arrêté n°426</strong> — Barème officiel des amendes pour infractions sanitaires</span>
-                        </li>
+                    <div className="p-8 md:p-12">
+                    <div className="flex items-center gap-4 mb-6">
+                        <div className="icon-container" style={{ background: 'rgba(59,130,246,0.12)' }}>
+                            <Scale className="w-6 h-6 text-[var(--blue)]" strokeWidth={1.8} />
+                        </div>
+                        <h2 className="font-serif font-bold text-[var(--text)] text-2xl">Cadre juridique</h2>
+                    </div>
+                    <ul className="space-y-3 text-[var(--text-muted)] font-sans">
+                        {[
+                            { label: 'Ordonnance 50/78', desc: 'Texte fondateur du contrôle sanitaire au Gabon' },
+                            { label: 'Décrets 2015', desc: "Organisation de l'AGASA et attribution des compétences d'inspection" },
+                            { label: 'Loi 040/2018', desc: 'Cadre réglementaire des amendes et sanctions' },
+                            { label: 'Arrêté n°426', desc: 'Barème officiel des amendes pour infractions sanitaires' },
+                        ].map((item, i) => (
+                            <li key={i} className="flex items-start gap-3">
+                                <span className="text-[var(--blue)] font-bold mt-1 flex-shrink-0">•</span>
+                                <span><strong className="text-[var(--text)]">{item.label}</strong> — {item.desc}</span>
+                            </li>
+                        ))}
                     </ul>
+                    </div>
                 </section>
 
                 {/* Provinces */}
-                <section className="bg-white border-2 border-gray-100 rounded-3xl p-8 md:p-12">
+                <section className="neu-card overflow-hidden p-0">
+                    <div className="relative w-full aspect-[16/9]">
+                        <Image src="/images/gabon/libreville-city.jpg" alt="Couverture des provinces du Gabon" fill sizes="(max-width: 768px) 100vw, 900px" className="object-cover" />
+                    </div>
+                    <div className="p-8 md:p-12">
                     <div className="flex items-center gap-4 mb-6">
-                        <div className="w-12 h-12 bg-inspect-orange/10 rounded-xl flex items-center justify-center">
-                            <MapPin className="w-6 h-6 text-inspect-orange" />
+                        <div className="icon-container" style={{ background: 'rgba(245,158,11,0.12)' }}>
+                            <MapPin className="w-6 h-6 text-[var(--amber)]" strokeWidth={1.8} />
                         </div>
-                        <h2 className="text-2xl font-bold text-gray-900">9 provinces couvertes</h2>
+                        <h2 className="font-serif font-bold text-[var(--text)] text-2xl">9 provinces couvertes</h2>
                     </div>
                     <div className="flex flex-wrap gap-3">
                         {PROVINCES.map((p) => (
-                            <span key={p} className="px-4 py-2 bg-gray-100 rounded-full text-sm font-semibold text-gray-700">
+                            <span key={p} className="badge" style={{ background: 'rgba(245,158,11,0.12)', color: 'var(--amber)' }}>
                                 {p}
                             </span>
                         ))}
                     </div>
+                    </div>
                 </section>
 
                 {/* Partenaires */}
-                <section className="bg-white border-2 border-gray-100 rounded-3xl p-8 md:p-12">
+                <section className="neu-card overflow-hidden p-0">
+                    <div className="relative w-full aspect-[16/9]">
+                        <Image src="/images/gabon/gabon-operators-meeting.jpg" alt="Partenaires institutionnels et techniques" fill sizes="(max-width: 768px) 100vw, 900px" className="object-cover" />
+                    </div>
+                    <div className="p-8 md:p-12">
                     <div className="flex items-center gap-4 mb-6">
-                        <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
-                            <Handshake className="w-6 h-6 text-yellow-600" />
+                        <div className="icon-container" style={{ background: 'rgba(234,179,8,0.12)' }}>
+                            <Handshake className="w-6 h-6 text-[var(--gold)]" strokeWidth={1.8} />
                         </div>
-                        <h2 className="text-2xl font-bold text-gray-900">Partenaires</h2>
+                        <h2 className="font-serif font-bold text-[var(--text)] text-2xl">Partenaires</h2>
                     </div>
                     <div className="grid sm:grid-cols-2 gap-4">
                         {['Ministère de la Santé', 'CEMAC', 'OMS', 'FAO', 'Ministère de l\'Agriculture', 'Trésor Public'].map((p) => (
-                            <div key={p} className="bg-gray-50 rounded-xl p-4 font-semibold text-gray-800 text-center">
+                            <div key={p} className="bg-[var(--bg-muted)] rounded-xl p-4 font-sans font-semibold text-[var(--text)] text-center text-sm">
                                 {p}
                             </div>
                         ))}
                     </div>
+                    </div>
                 </section>
 
                 {/* Dev team */}
-                <section className="bg-white border-2 border-gray-100 rounded-3xl p-8 md:p-12">
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                            <Code className="w-6 h-6 text-purple-600" />
-                        </div>
-                        <h2 className="text-2xl font-bold text-gray-900">Équipe de développement</h2>
+                <section className="neu-card overflow-hidden p-0">
+                    <div className="relative w-full aspect-[16/9]">
+                        <Image src="/images/gabon/digital-office.jpg" alt="Équipe de développement AGASA-Inspect" fill sizes="(max-width: 768px) 100vw, 900px" className="object-cover" />
                     </div>
-                    <p className="text-gray-700 leading-relaxed">
-                        AGASA-Inspect est conçu et développé par <strong>NTSAGUI Digital</strong>, spécialiste des solutions numériques pour l&apos;administration publique gabonaise, en étroite collaboration avec les équipes terrain de la DICSP.
+                    <div className="p-8 md:p-12">
+                    <div className="flex items-center gap-4 mb-6">
+                        <div className="icon-container" style={{ background: 'rgba(139,92,246,0.12)' }}>
+                            <Code className="w-6 h-6 text-[var(--violet)]" strokeWidth={1.8} />
+                        </div>
+                        <h2 className="font-serif font-bold text-[var(--text)] text-2xl">Équipe de développement</h2>
+                    </div>
+                    <p className="text-[var(--text-muted)] font-sans leading-relaxed">
+                        AGASA-Inspect est conçu et développé par <strong className="text-[var(--text)]">NTSAGUI Digital</strong>, spécialiste des solutions numériques pour l&apos;administration publique gabonaise, en étroite collaboration avec les équipes terrain de la DICSP.
                     </p>
+                    </div>
                 </section>
             </div>
         </div>
