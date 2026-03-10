@@ -82,7 +82,9 @@ export default function DemoPage() {
 
     const handleEnterDemo = (profile: typeof DEMO_PROFILES[number]) => {
         enterDemo(profile.id);
-        router.push(profile.redirect);
+        // Use full navigation (not router.push) to guarantee the cookie
+        // is sent with the server request to the middleware
+        window.location.href = profile.redirect;
     };
 
     return (
