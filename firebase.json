@@ -1,6 +1,6 @@
 {
     "hosting": {
-        "site": "agasa-inspect-6bb1d",
+        "site": "agasa-inspects",
         "public": "public",
         "ignore": [
             "firebase.json",
