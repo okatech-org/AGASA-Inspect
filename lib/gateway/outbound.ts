@@ -1,5 +1,5 @@
 /**
- * API Gateway — Outbound F3 : AGASA-Inspect → AGASA-Core
+ * API Gateway — Outbound F3 : AGASA-Inspect → AGASA-Admin
  * Envoie les données d'inspection et PV vers le système central
  * Mode simulation activé pour le MVP
  */

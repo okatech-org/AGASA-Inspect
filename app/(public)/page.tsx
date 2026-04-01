@@ -251,7 +251,7 @@ function HowItWorks() {
         {
             icon: <RefreshCw className="w-7 h-7" strokeWidth={1.8} />,
             title: 'Synchronisation',
-            desc: "Les données remontent vers AGASA-Core et mettent à jour le score Smiley de l'établissement",
+            desc: "Les données remontent vers AGASA-Admin et mettent à jour le score Smiley de l'établissement",
             image: "/images/gabon/digital-office.jpg",
         },
     ];

@@ -1,5 +1,5 @@
 /**
- * API Gateway — Inbound F4 : AGASA-Core → AGASA-Inspect
+ * API Gateway — Inbound F4 : AGASA-Admin → AGASA-Inspect
  * Reçoit les données de référence depuis le système central
  * Mode simulation activé pour le MVP
  */

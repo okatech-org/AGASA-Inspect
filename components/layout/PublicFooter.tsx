@@ -4,7 +4,7 @@ import { Shield, MapPin, Phone, Mail } from 'lucide-react';
 
 const ECOSYSTEM = [
     { name: 'AGASA-Pro', desc: 'Opérateurs économiques' },
-    { name: 'AGASA-Core', desc: 'Back-office & BI' },
+    { name: 'AGASA-Admin', desc: 'Back-office & BI' },
     { name: 'AGASA-Inspect', desc: 'Inspections terrain' },
     { name: 'AGASA-Citoyen', desc: 'Signalements citoyens' },
 ];

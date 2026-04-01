@@ -174,7 +174,7 @@ export default function InspectionEnCoursPage() {
 
             router.push("/inspections");
         } catch (error) {
-            const message = error instanceof Error ? error.message : "Impossible de synchroniser le rapport vers AGASA-Core.";
+            const message = error instanceof Error ? error.message : "Impossible de synchroniser le rapport vers AGASA-Admin.";
             setSendError(message);
         } finally {
             setIsSending(false);
@@ -208,7 +208,7 @@ export default function InspectionEnCoursPage() {
                     </div>
                 )}
                 <BigButton onClick={handleCompleteInspection} disabled={isSending} className="w-full h-16 text-lg">
-                    {isSending ? "Synchronisation vers AGASA-Core..." : "📄 Terminer l'inspection"}
+                    {isSending ? "Synchronisation vers AGASA-Admin..." : "📄 Terminer l'inspection"}
                 </BigButton>
             </div>
         );

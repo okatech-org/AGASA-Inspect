@@ -173,7 +173,7 @@ export default function NouvelleInspectionPage() {
             {/* New establishment */}
             {tab === 'nouveau' && (
                 <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
-                    <p className="text-sm text-gray-500">L&apos;établissement sera créé et synchronisé avec AGASA-Core.</p>
+                    <p className="text-sm text-gray-500">L&apos;établissement sera créé et synchronisé avec AGASA-Admin.</p>
                     <input placeholder="Nom de l'établissement *" className="w-full h-14 px-4 border-2 border-gray-300 rounded-xl text-lg focus:border-inspect-green outline-none" />
                     <select className="w-full h-14 px-4 border-2 border-gray-300 rounded-xl text-lg bg-white">
                         <option>Type d&apos;activité</option>
